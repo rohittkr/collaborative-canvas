@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Collaborative Drawing Canvas</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header with tools -->
+        <div class="toolbar">
+            <h1>🎨 Collaborative Canvas</h1>
+            
+            <!-- Drawing Tools -->
+            <div class="tools">
+                <!-- Color Picker -->
+                <div class="tool-group">
+                    <label>Color:</label>
+                    <input type="color" id="colorPicker" value="#000000">
+                </div>
+
+                <!-- Brush Size -->
+                <div class="tool-group">
+                    <label>Size:</label>
+                    <input type="range" id="brushSize" min="1" max="50" value="5">
+                    <span id="sizeValue">5</span>px
+                </div>
+
+                <!-- Tool Buttons -->
+                <button id="brushBtn" class="tool-btn active">✏️ Brush</button>
+                <button id="eraserBtn" class="tool-btn">🧹 Eraser</button>
+                <button id="undoBtn" class="tool-btn">↩️ Undo</button>
+                <button id="redoBtn" class="tool-btn">↪️ Redo</button>
+                <button id="clearBtn" class="tool-btn danger">🗑️ Clear</button>
+            </div>
+
+            <!-- User Status (we'll use this later) -->
+            <div class="status">
+                <span id="connectionStatus">🔴 Offline</span>
+                <span id="usersOnline">Users: 0</span>
+            </div>
+        </div>
+
+        <!-- The Drawing Canvas -->
+        <div class="canvas-container">
+            <canvas id="drawingCanvas"></canvas>
+            
+            <!-- Disconnection Overlay -->
+            <div id="disconnectOverlay" style="display: none;">
+                <div style="text-align: center;">
+                    <h2>🔴 Server Disconnected</h2>
+                    <p>Cannot draw while disconnected</p>
+                    <p style="font-size: 14px; opacity: 0.8;">Trying to reconnect...</p>
+                    <button onclick="location.reload()" style="margin-top: 20px; padding: 10px 20px; font-size: 16px; cursor: pointer; border-radius: 5px; border: none; background: #667eea; color: white;">
+                        Refresh Page
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Online Users List (for later) -->
+        <div class="users-panel">
+            <h3>Online Users</h3>
+            <ul id="usersList"></ul>
+        </div>
+    </div>
+
+    <!-- JavaScript Files - Only Required 3 Files -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="canvas.js"></script>
+    <script src="websocket.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>

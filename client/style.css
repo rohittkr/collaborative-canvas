@@ -1,0 +1,258 @@
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    height: 100vh;
+    overflow: hidden;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    padding: 20px;
+    gap: 15px;
+}
+
+/* Toolbar Styles */
+.toolbar {
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.toolbar h1 {
+    font-size: 24px;
+    color: #333;
+}
+
+.tools {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.tool-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.tool-group label {
+    font-weight: 600;
+    color: #555;
+}
+
+#colorPicker {
+    width: 60px;
+    height: 40px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+#brushSize {
+    width: 120px;
+}
+
+#sizeValue {
+    font-weight: bold;
+    color: #667eea;
+    min-width: 25px;
+    display: inline-block;
+}
+
+/* Tool Buttons */
+.tool-btn {
+    padding: 10px 20px;
+    border: 2px solid #667eea;
+    background: white;
+    color: #667eea;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.tool-btn:hover {
+    background: #667eea;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+}
+
+.tool-btn.active {
+    background: #667eea;
+    color: white;
+}
+
+.tool-btn.danger {
+    border-color: #e74c3c;
+    color: #e74c3c;
+}
+
+.tool-btn.danger:hover {
+    background: #e74c3c;
+    color: white;
+}
+
+/* Status Bar */
+.status {
+    display: flex;
+    gap: 20px;
+    font-weight: 600;
+    color: #555;
+}
+
+#connectionStatus {
+    padding: 5px 15px;
+    background: #f0f0f0;
+    border-radius: 20px;
+}
+
+/* Canvas Container */
+.canvas-container {
+    flex: 1;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+#drawingCanvas {
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    cursor: crosshair;
+    background: white;
+}
+
+/* Disconnection Overlay */
+#disconnectOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    z-index: 100;
+    color: white;
+}
+
+#disconnectOverlay h2 {
+    margin-bottom: 15px;
+    font-size: 28px;
+}
+
+#disconnectOverlay p {
+    margin: 10px 0;
+    font-size: 18px;
+}
+
+/* Users Panel */
+.users-panel {
+    position: fixed;
+    right: 20px;
+    top: 120px;
+    background: white;
+    border-radius: 15px;
+    padding: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    min-width: 200px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.users-panel h3 {
+    margin-bottom: 10px;
+    color: #333;
+    font-size: 16px;
+}
+
+#usersList {
+    list-style: none;
+}
+
+#usersList li {
+    padding: 8px;
+    margin: 5px 0;
+    background: #f8f9fa;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#usersList li::before {
+    content: '●';
+    font-size: 20px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .toolbar {
+        padding: 15px;
+    }
+    
+    .toolbar h1 {
+        font-size: 18px;
+    }
+    
+    .tools {
+        gap: 10px;
+    }
+    
+    .users-panel {
+        display: none; /* Hide on mobile for now */
+    }
+}
+
+/* Animations */
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.notification {
+    animation: slideInRight 0.3s ease-out;
+}
+
+.user-cursor {
+    animation: fadeIn 0.2s ease-out;
+}

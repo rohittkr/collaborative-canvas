@@ -188,7 +188,7 @@ this.canvas.height = YOUR_HEIGHT;
 - ✅ Firefox
 - ✅ Safari
 - ✅ Edge
-- ⚠️ Mobile browsers (touch support included but may have quirks)
+- ✅ Mobile browsers (touch support included but may have quirks)
 
 ---
 
@@ -306,17 +306,4 @@ Built as a technical assessment to demonstrate:
 - Clean code organization
 
 ---
-
-## 📝 License
-
-MIT License - Feel free to use for learning and portfolio purposes.
-
----
-
-## 📧 Contact
-
-For questions or feedback about this implementation, please reach out through the GitHub repository.
-
----
-
 **Note:** This is a demo application built for assessment purposes. For production use, consider adding authentication, persistence, and additional security measures.

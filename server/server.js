@@ -42,7 +42,15 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../client/index.html'));
 });
 
-// API endpoint for room list
+// ✅ HEALTH CHECK ROUTE (for Render)
+app.get('/healthz', (req, res) => {
+    res.status(200).json({ status: 'ok', uptime: process.uptime() });
+});
+
+// ============================================
+// API ENDPOINTS
+// ============================================
+
 app.get('/api/rooms', (req, res) => {
     res.json({
         success: true,
@@ -50,7 +58,6 @@ app.get('/api/rooms', (req, res) => {
     });
 });
 
-// API endpoint for stats
 app.get('/api/stats', (req, res) => {
     res.json({
         success: true,
@@ -153,7 +160,6 @@ io.on('connection', (socket) => {
         socket.to(currentRoomId).emit('drawing-data', operation);
     });
     
-    // Save canvas snapshot after drawing
     socket.on('save-snapshot', (data) => {
         if (!currentUser || !currentRoomId) return;
         
@@ -165,17 +171,11 @@ io.on('connection', (socket) => {
         console.log(`📊 Room ${currentRoomId}: ${stats.historySize} snapshots, index: ${stats.historyIndex}`);
     });
     
-    // ============================================
-    // CLEAR CANVAS
-    // ============================================
-    
-    socket.on('clear-canvas', (data) => {
+    socket.on('clear-canvas', () => {
         if (!currentUser || !currentRoomId) return;
         
         console.log(`🗑️ Canvas cleared by ${currentUser.userName} in room ${currentRoomId}`);
-        
         drawingStateManager.clearOperations(currentRoomId);
-        
         io.to(currentRoomId).emit('canvas-cleared', {
             userId: currentUser.userId,
             userName: currentUser.userName
@@ -183,57 +183,31 @@ io.on('connection', (socket) => {
     });
     
     // ============================================
-    // GLOBAL UNDO/REDO (Snapshot-Based)
+    // GLOBAL UNDO/REDO
     // ============================================
     
-    socket.on('undo-request', (data) => {
+    socket.on('undo-request', () => {
         if (!currentUser || !currentRoomId) return;
-        
-        console.log(`↩️ Undo requested by ${currentUser.userName} in room ${currentRoomId}`);
-        
         const result = drawingStateManager.undo(currentRoomId);
-        
-        if (!result.success) {
-            socket.emit('undo-failed', { message: result.message });
-            console.log(`❌ Undo failed: ${result.message}`);
-            return;
-        }
-        
-        console.log(`✅ Undid to index ${result.index}`);
-        
+        if (!result.success) return socket.emit('undo-failed', { message: result.message });
         io.to(currentRoomId).emit('global-undo', {
             userId: currentUser.userId,
             userName: currentUser.userName,
             canvasDataURL: result.canvasDataURL,
             index: result.index
         });
-        
-        console.log(`📤 Sent undo to all users in room ${currentRoomId}`);
     });
     
-    socket.on('redo-request', (data) => {
+    socket.on('redo-request', () => {
         if (!currentUser || !currentRoomId) return;
-        
-        console.log(`↪️ Redo requested by ${currentUser.userName} in room ${currentRoomId}`);
-        
         const result = drawingStateManager.redo(currentRoomId);
-        
-        if (!result.success) {
-            socket.emit('redo-failed', { message: result.message });
-            console.log(`❌ Redo failed: ${result.message}`);
-            return;
-        }
-        
-        console.log(`✅ Redid to index ${result.index}`);
-        
+        if (!result.success) return socket.emit('redo-failed', { message: result.message });
         io.to(currentRoomId).emit('global-redo', {
             userId: currentUser.userId,
             userName: currentUser.userName,
             canvasDataURL: result.canvasDataURL,
             index: result.index
         });
-        
-        console.log(`📤 Sent redo to all users in room ${currentRoomId}`);
     });
     
     // ============================================
@@ -242,7 +216,6 @@ io.on('connection', (socket) => {
     
     socket.on('cursor-move', (data) => {
         if (!currentUser || !currentRoomId) return;
-        
         socket.to(currentRoomId).emit('user-cursor', {
             userId: currentUser.userId,
             userName: currentUser.userName,
@@ -270,20 +243,13 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
         if (currentUser && currentRoomId) {
             console.log(`👋 ${currentUser.userName} disconnected from room ${currentRoomId}`);
-            
             roomManager.removeUserFromRoom(currentRoomId, currentUser.userId);
-            
             io.to(currentRoomId).emit('user-left', {
                 userId: currentUser.userId,
                 userName: currentUser.userName
             });
-            
             broadcastUsersList(currentRoomId);
         }
-    });
-    
-    socket.on('error', (error) => {
-        console.error('❌ Socket error:', error);
     });
 });
 
@@ -334,10 +300,8 @@ server.listen(PORT, () => {
 
 process.on('SIGINT', () => {
     console.log('\n👋 Shutting down server...');
-    
     const stats = roomManager.getGlobalStats();
     console.log(`📊 Final stats: ${stats.totalUsers} users in ${stats.totalRooms} rooms`);
-    
     server.close(() => {
         console.log('✅ Server closed');
         process.exit(0);
